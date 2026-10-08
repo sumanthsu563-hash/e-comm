@@ -8,8 +8,9 @@ import {
   AlertCircle,
   ShoppingBag,
   ArrowLeft,
-  CheckCircle2,
-  Lock
+  Lock,
+  Truck,
+  CheckCircle2
 } from 'lucide-react';
 import {
   selectCartItems,
@@ -108,12 +109,12 @@ export default function CheckoutPage() {
             contact: shippingForm.phone
           },
           theme: {
-            color: '#2563eb'
+            color: '#4f46e5'
           },
           handler: async (response) => {
             try {
               // 4. Verify signature on backend
-              const verifyRes = await axiosClient.post('/payments/verify', {
+              await axiosClient.post('/payments/verify', {
                 orderId,
                 razorpayOrderId: response.razorpay_order_id,
                 razorpayPaymentId: response.razorpay_payment_id,
@@ -161,15 +162,15 @@ export default function CheckoutPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="max-w-md mx-auto my-20 p-8 text-center bg-white rounded-3xl border border-gray-200 shadow-sm">
-        <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Your Cart is Empty</h2>
-        <p className="text-sm text-gray-500 mb-6">
+      <div className="max-w-md mx-auto my-20 p-8 text-center bg-white rounded-3xl border border-slate-200 shadow-sm">
+        <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Your Cart is Empty</h2>
+        <p className="text-sm text-slate-500 mb-6">
           Add items to your cart before proceeding to checkout.
         </p>
         <Link
           to="/products"
-          className="inline-block px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold"
+          className="inline-block px-5 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold"
         >
           Browse Products
         </Link>
@@ -178,45 +179,46 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      {/* Top Breadcrumb & Title */}
       <div>
         <Link
           to="/cart"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 transition mb-3"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-500 hover:text-brand-600 transition mb-3"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Cart
         </Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Secure Checkout
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          Checkout & Payment
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Review shipping information and finalize your payment via Razorpay.
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          Complete your delivery address and authorize payment securely.
         </p>
       </div>
 
       {error && (
-        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-2.5">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-semibold flex items-center gap-2.5">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handlePlaceOrderAndPay} className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <form onSubmit={handlePlaceOrderAndPay} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Shipping Address Form */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-          <div className="flex items-center gap-2.5 pb-4 border-b border-gray-100">
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+        <div className="lg:col-span-2 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-subtle space-y-6">
+          <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+            <div className="w-10 h-10 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
               <MapPin className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900">Shipping Address</h3>
-              <p className="text-xs text-gray-400">Where should our merchants deliver?</p>
+              <h3 className="text-base font-bold text-slate-900">Delivery Address</h3>
+              <p className="text-xs text-slate-400">Where should your package be shipped?</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                 Street Address *
               </label>
               <input
@@ -225,13 +227,13 @@ export default function CheckoutPage() {
                 required
                 value={shippingForm.street}
                 onChange={handleInputChange}
-                placeholder="123 Market Street, Apt 4B"
-                className="w-full text-sm py-2 px-3.5 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Flat 101, Palm Heights, Main Avenue"
+                className="w-full text-sm py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-inner"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                 City *
               </label>
               <input
@@ -240,13 +242,13 @@ export default function CheckoutPage() {
                 required
                 value={shippingForm.city}
                 onChange={handleInputChange}
-                placeholder="Mumbai or New York"
-                className="w-full text-sm py-2 px-3.5 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Mumbai or San Francisco"
+                className="w-full text-sm py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-inner"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                 State / Province *
               </label>
               <input
@@ -255,13 +257,13 @@ export default function CheckoutPage() {
                 required
                 value={shippingForm.state}
                 onChange={handleInputChange}
-                placeholder="Maharashtra / NY"
-                className="w-full text-sm py-2 px-3.5 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Maharashtra or CA"
+                className="w-full text-sm py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-inner"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                 Postal Code *
               </label>
               <input
@@ -271,13 +273,13 @@ export default function CheckoutPage() {
                 value={shippingForm.postalCode}
                 onChange={handleInputChange}
                 placeholder="400001"
-                className="w-full text-sm py-2 px-3.5 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full text-sm py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-inner"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Phone Number *
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                Contact Phone *
               </label>
               <input
                 type="tel"
@@ -286,68 +288,74 @@ export default function CheckoutPage() {
                 value={shippingForm.phone}
                 onChange={handleInputChange}
                 placeholder="+91 9876543210"
-                className="w-full text-sm py-2 px-3.5 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full text-sm py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-inner"
               />
             </div>
           </div>
         </div>
 
-        {/* Payment & Order Summary */}
-        <div className="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-          <div className="flex items-center gap-2.5 pb-4 border-b border-gray-100">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+        {/* Payment Summary */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-subtle space-y-6 sticky top-24">
+          <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
               <CreditCard className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900">Payment Summary</h3>
-              <p className="text-xs text-gray-400">Razorpay Encrypted Gateway</p>
+              <h3 className="text-base font-bold text-slate-900">Payment Summary</h3>
+              <p className="text-xs text-slate-400">Razorpay Encrypted Gateway</p>
             </div>
           </div>
 
-          <div className="space-y-3 max-h-56 overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-56 overflow-y-auto pr-1 divide-y divide-slate-100">
             {cartItems.map((item) => (
-              <div key={item.product} className="flex items-center justify-between text-xs">
-                <span className="text-gray-700 truncate max-w-[180px]">
+              <div key={item.product} className="flex items-center justify-between text-xs pt-2">
+                <span className="text-slate-700 truncate max-w-[180px] font-medium">
                   {item.quantity}x {item.title}
                 </span>
-                <span className="font-semibold text-gray-900">
+                <span className="font-bold text-slate-900">
                   ${(item.price * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="pt-4 border-t border-gray-100 space-y-2 text-sm">
-            <div className="flex justify-between text-gray-600">
-              <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+          <div className="pt-4 border-t border-slate-100 space-y-2 text-sm">
+            <div className="flex justify-between text-slate-600">
+              <span>Items Subtotal</span>
+              <span className="font-bold text-slate-900">${subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-slate-600">
               <span>Tax (5%)</span>
-              <span>${tax.toFixed(2)}</span>
+              <span className="font-bold text-slate-900">${tax.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Shipping</span>
-              <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+            <div className="flex justify-between text-slate-600">
+              <span>Shipping Fee</span>
+              <span className="font-bold">
+                {shipping === 0 ? (
+                  <span className="text-emerald-600 font-extrabold">FREE</span>
+                ) : (
+                  `$${shipping.toFixed(2)}`
+                )}
+              </span>
             </div>
-            <div className="pt-2 border-t border-gray-100 flex justify-between text-base font-extrabold text-gray-900">
+            <div className="pt-3 border-t border-slate-100 flex justify-between text-base font-black text-slate-900">
               <span>Total Payable</span>
-              <span className="text-blue-600 text-xl">${total.toFixed(2)}</span>
+              <span className="text-brand-600 text-xl font-black">${total.toFixed(2)}</span>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 disabled:opacity-50 transition text-sm flex items-center justify-center gap-2"
+            className="w-full py-4 px-6 rounded-2xl font-bold text-white bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 shadow-md shadow-brand-500/25 hover:shadow-glow disabled:opacity-50 transition text-sm flex items-center justify-center gap-2"
           >
             <Lock className="w-4 h-4" />
             {loading ? 'Processing Payment...' : `Pay $${total.toFixed(2)} with Razorpay`}
           </button>
 
-          <p className="text-[11px] text-gray-400 text-center flex items-center justify-center gap-1">
+          <p className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1.5 font-medium">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-            Test Mode Active • No real charges will be made
+            Test Mode Active • No real card charges
           </p>
         </div>
       </form>
